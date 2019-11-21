@@ -1,7 +1,7 @@
 import { createWriteStream } from 'fs'
 import { resolve } from 'path'
 import { sync } from 'mkdirp'
-import { generate } from 'shortid'
+// import { generate } from 'shortid'
 import { db } from './db'
 
 const uploadDir = resolve(__dirname, '../../live/uploads')
@@ -10,7 +10,7 @@ const uploadDir = resolve(__dirname, '../../live/uploads')
 sync(uploadDir)
 
 const storeUpload = async ({ stream, filename }) => {
-  const id = generate()
+  // const id = generate()
   const file = `${id}-${filename}`
   const path = `${uploadDir}/${file}`
   const urlPath = `files/${file}`

@@ -41,9 +41,7 @@ type Query {
   uploads: [File]
   QyWeixinAccseeToken: String!
   get(options: Any): Any
-  
   post(options: Any): Any
-
   oa(options: Any): Any
 }
 
@@ -53,9 +51,7 @@ type Mutation {
   addMessage(input: MessageInput!): Message!
   singleUpload(file: Upload!): File!
   multipleUpload(files: [Upload!]!): [File!]!
-
   post(operation: String, options: Any): Any
-
   oa(options: Any): Any
 }
 

@@ -1,13 +1,9 @@
 import GraphQLJSON from 'graphql-type-json'
-import shortid from 'shortid'
+// import shortid from 'shortid'
 import Request from 'request'
-import { AppInfos } from '../utils/db';
 import { BASE_URL } from 'apollo-server/const';
 
-
-
-
-let urlOrigin = BASE_URL
+const urlOrigin = BASE_URL
 
 export default {
   JSON: GraphQLJSON,
@@ -21,18 +17,58 @@ export default {
     messages: (root, args, { db }) => db.get('messages').value(),
     uploads: (root, args, { db }) => db.get('uploads').value(),
     get: (root, { options: { name, version, data: $data } }) => {
-
       switch (name) {
         case 'appInfos':
           return new Promise((resolve, reject) => {
             if (version === '1') {
-              resolve(AppInfos().get('v1').value())
+              Request(
+                urlOrigin + "/pocketgames/orderRepair/appInfo/SDK/1",
+                function (error, httpResponse, body) {
+                  if (error) {
+                    console.log("job1 v1 error: " + error)
+                  } else {
+                    const data: OrderManagement.AppInfoRes = JSON.parse(body)
+                    const appInfos: OrderManagement.AppInfos2 = {}
+                    data.data.appInfos.forEach((val, index, arr) => {
+                      const gameZones = {}
+                      const appId = val.appInfo.appId
+                      val.gameZones.forEach(val => {
+                        gameZones[appId + "-" + val.gameZoneId] = val
+                      });
+                      (val.appInfo as OrderManagement.AppInfo2).gameZones = gameZones
+                      appInfos[
+                        val.appInfo.appId
+                      ] = val.appInfo as OrderManagement.AppInfo2
+                    })
+                    data.data.appInfos = appInfos as any
+                    resolve(data)
+                  }
+                })
             } else if (version === '2') {
-              resolve(AppInfos().get('v2').value())
+              Request(
+                urlOrigin + "/pocketgames/orderRepair/appInfo/SDK/2",
+                function (error, httpResponse, body) {
+                  if (error) {
+                    console.log("job1 v2 error: " + error)
+                  } else {
+                    const data: OrderManagement.AppInfoRes = JSON.parse(body)
+                    const appInfos: OrderManagement.AppInfos2 = {}
+                    data.data.appInfos.forEach((val, index, arr) => {
+                      const gameZones = {}
+                      val.gameZones.forEach(val => {
+                        gameZones[val.appId + "-" + val.gameZoneId] = val
+                      });
+                      (val.appInfo as OrderManagement.AppInfo2).gameZones = gameZones
+                      appInfos[
+                        val.appInfo.appId
+                      ] = val.appInfo as OrderManagement.AppInfo2
+                    })
+                    data.data.appInfos = appInfos as any
+                    resolve(data);
+                  }
+                })
             }
-
           })
-          break
         case 'games':
           return new Promise((resolve, reject) => {
             let url = urlOrigin + '/pocketgames/appInfo/list/SDK/' + version
@@ -48,7 +84,6 @@ export default {
               }
             })
           })
-          break
         case 'channelGames':
           return new Promise((resolve, reject) => {
             Request(urlOrigin + '/pocketgames/channel/allGames', function (
@@ -66,16 +101,13 @@ export default {
               }
             })
           })
-          break
       }
-
     },
     post: (root, { options: { name, version, data: $data } }) => {
       let url = ''
       let bd = getUrlencodedBody($data)
       let channelNames = ['zones', 'channels']
       return new Promise((resolve, reject) => {
-
         switch (name) {
           case 'zones':
             url = urlOrigin + '/pocketgames/game/gameZoneInfo/list/SDK/' + version
@@ -91,7 +123,8 @@ export default {
         if (channelNames.indexOf(name) === -1) {
           Request(url, function (err, httpResponse, body) {
             if (err) {
-
+              console.error(err)
+              return
             } else {
               if (body) {
                 let data = JSON.parse(body)
@@ -110,7 +143,8 @@ export default {
           },
             function (err, httpResponse, body) {
               if (err) {
-
+                console.error(err)
+                return
               } else {
                 if (body) {
                   let data = JSON.parse(body)
@@ -156,7 +190,6 @@ export default {
           case 'addZoneInfo':
             url += '/pocketgames/game/gameZoneInfo/add/SDK/' + version
             break
-
           case 'deletechannel':
             url += '/pocketgames/channel/delete'
             break
@@ -184,18 +217,17 @@ export default {
           },
             function (err, httpResponse, body) {
               if (err) {
-
+                console.error(err)
+                return
               } else {
                 if (body) {
                   try {
                     let data = JSON.parse(body)
                     data.version = version
-                    console.log(data)
                     resolve(data)
                   } catch (err) {
                     resolve(body)
                   }
-
                 } else {
                   resolve(body)
                 }
@@ -203,104 +235,92 @@ export default {
             }
           )
         } else {
-          Request.post(
-            {
-              url,
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            },
-            function (err, httpResponse, body) {
-              if (err) {
-
-              } else {
-                console.log(body)
-                if (body) {
-                  let data = JSON.parse(body)
-                  data.version = version
-                  if (data.code === 200 && name === 'verify' && version === '2') {
-                    Request.post(
-                      {
-                        url: urlOrigin + '/pocketgames/orderRepair/payInfo/SDK/2',
-                        headers: {
-                          'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                          appId: data.data.orderInfo.appId,
-                          advChannel: data.data.orderInfo.advChannel,
-                          channelId: data.data.orderInfo.channel,
-                          cardCode: data.data.orderInfo.cardCode
-                        })
+          Request.post({
+            url,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }, function (err, httpResponse, body) {
+            if (err) {
+              console.error(err)
+              return
+            } else {
+              if (body) {
+                let data = JSON.parse(body)
+                data.version = version
+                if (data.code === 200 && name === 'verify' && version === '2') {
+                  Request.post(
+                    {
+                      url: urlOrigin + '/pocketgames/orderRepair/payInfo/SDK/2',
+                      headers: {
+                        'Content-Type': 'application/json'
                       },
-                      function (err, httpResponse, res) {
-                        if (err) {
-
-                          return
-                        }
-                        if (res) {
-                          // console.log(res)
-                          data.data.products = JSON.parse(res).data.products
-                          resolve(data)
-                        }
+                      body: JSON.stringify({
+                        appId: data.data.orderInfo.appId,
+                        advChannel: data.data.orderInfo.advChannel,
+                        channelId: data.data.orderInfo.channel,
+                        cardCode: data.data.orderInfo.cardCode
+                      })
+                    },
+                    function (err, httpResponse, res) {
+                      if (err) {
+                        console.error(err)
+                        return
                       }
-                    )
-                  } else if (
-                    data.code === 200 &&
-                    name === 'Verify' &&
-                    version === '1'
-                  ) {
-                    Request.post(
-                      {
-                        url: urlOrigin + '/pocketgames/orderRepair/payInfo/SDK/1',
-                        headers: {
-                          'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                          confId: data.data.orderInfo.confId,
-                          channelId: data.data.orderInfo.payWay
-                        })
+                      if (res) {
+                        data.data.products = JSON.parse(res).data.products
+                        resolve(data)
+                      }
+                    }
+                  )
+                } else if (
+                  data.code === 200 &&
+                  name === 'Verify' &&
+                  version === '1'
+                ) {
+                  Request.post(
+                    {
+                      url: urlOrigin + '/pocketgames/orderRepair/payInfo/SDK/1',
+                      headers: {
+                        'Content-Type': 'application/json'
                       },
-                      function (err, httpResponse, res) {
-                        if (err) {
-
-                          return
-                        }
-                        if (res) {
-                          data.data.products = JSON.parse(res).data.products
-                          resolve(data)
-                        }
+                      body: JSON.stringify({
+                        confId: data.data.orderInfo.confId,
+                        channelId: data.data.orderInfo.payWay
+                      })
+                    },
+                    function (err, httpResponse, res) {
+                      if (err) {
+                        console.error(err)
+                        return
                       }
-                    )
-                  } else {
-                    resolve(data)
-                  }
+                      if (res) {
+                        data.data.products = JSON.parse(res).data.products
+                        resolve(data)
+                      }
+                    }
+                  )
                 } else {
-                  resolve(body)
+                  resolve(data)
                 }
+              } else {
+                resolve(body)
               }
             }
-          )
+          })
         }
       })
     },
-
     addMessage: (root, { input }, { pubsub, db }) => {
       const message = {
-        id: shortid.generate(),
+        // id: shortid.generate(),
         text: input.text
       }
-
-      db.get('messages')
-        .push(message)
-        .last()
-        .write()
-
+      db.get('messages').push(message).last().write()
       pubsub.publish('messages', {
         messageAdded: message
       })
-
       return message
     },
-
     singleUpload: (root, { file }, { processUpload }) => processUpload(file),
     multipleUpload: (root, { files }, { processUpload }) =>
       Promise.all(files.map(processUpload))
@@ -312,24 +332,16 @@ export default {
     },
     counter: {
       subscribe: (parent, args, { pubsub }) => {
-        const channel = Math.random()
-          .toString(36)
-          .substring(2, 15) // random channel name
+        const channel = Math.random().toString(36).substring(2, 15)
         let count = 0
-        setInterval(
-          () =>
-            pubsub.publish(channel, {
-              // eslint-disable-next-line no-plusplus
-              counter: {
-                count: count++
-              }
-            }),
-          2000
-        )
+        setInterval(() => pubsub.publish(channel, {
+          counter: {
+            count: count++
+          }
+        }), 2000)
         return pubsub.asyncIteratoresolve(channel)
       }
     },
-
     messageAdded: {
       subscribe: (parent, args, { pubsub }) => pubsub.asyncIteratoresolve('messages')
     }
@@ -337,7 +349,6 @@ export default {
 }
 
 function getUrlencodedBody(data) {
-
   let bodyStr = ''
   Object.keys(data).forEach(key => {
     const value = data[key]

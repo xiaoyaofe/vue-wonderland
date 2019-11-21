@@ -1,11 +1,10 @@
 import GraphQLJSON from "graphql-type-json";
-import shortid from "shortid";
+// import shortid from "shortid";
 import Request from "request";
-import { OA_CONST } from './utils/const';
+import { OA as Const } from './utils/const';
 import { OA_RESOLVER } from './resolvers/oa';
-import { AppInfos } from './utils/db';
-import { OA } from 'types';
-import { BASE_URL } from './const';
+
+const BASE_URL = "http://sdk-admin-sg.pocketgamesol.com:8380"
 
 export default {
   JSON: GraphQLJSON,
@@ -20,49 +19,100 @@ export default {
     },
     messages: (root: any, args, { db }) => db.get("messages").value(),
     uploads: (root: any, args, { db }) => db.get("uploads").value(),
-
-    oa: (root: any, args: OA.Args) => {
-      switch (args.options.name) {
-        case OA_CONST.QUERY.ACCESS_TOKEN:
-          console.log(OA_CONST.QUERY.ACCESS_TOKEN)
-          return OA_RESOLVER.query.accessToken()
-          break
-      }
-    },
-
+    // oa: (root: any, { options: { name } }, context) => {
+    //   switch (name) {
+    //     case Const.QUERY.ACCESS_TOKEN:
+    //       return OA_RESOLVER.query.accessToken()
+    //     default:
+    //       break
+    //   }
+    // },
     get: (root: any, { options: { name, version, data } }) => {
       switch (name) {
         case "appInfos":
-          return new Promise((r, j) => {
-            if (version === "1") {
-              r(AppInfos()
-                .get("v1")
-                .value());
-            } else if (version === "2") {
-              r(AppInfos()
-                .get("v2")
-                .value());
+          return new Promise((resolve, reject) => {
+            if (version === '1') {
+              Request(
+                BASE_URL + "/pocketgames/orderRepair/appInfo/SDK/1",
+                function (error, httpResponse, body) {
+                  if (error) {
+                    console.log("job1 v1 error: " + error)
+                  } else {
+                    try {
+                      const data: OrderManagement.AppInfoRes = JSON.parse(body)
+                      const appInfos: OrderManagement.AppInfos2 = {}
+                      data.data.appInfos.forEach((val, index, arr) => {
+                        ``
+                        const gameZones = {}
+                        const appId = val.appInfo.appId
+                        val.gameZones.forEach(val => {
+                          gameZones[appId + "-" + val.gameZoneId] = val
+                        });
+                        (val.appInfo as OrderManagement.AppInfo2).gameZones = gameZones
+                        appInfos[
+                          val.appInfo.appId
+                        ] = val.appInfo as OrderManagement.AppInfo2
+                      })
+                      data.data.appInfos = appInfos as any
+                      resolve(data)
+                    } catch (e) {
+                      resolve({ code: 500, message: body })
+                    }
+
+                  }
+                })
+            } else if (version === '2') {
+              Request(
+                BASE_URL + "/pocketgames/orderRepair/appInfo/SDK/2",
+                function (error, httpResponse, body) {
+                  if (error) {
+                    console.log("job1 v2 error: " + error)
+                    return
+                  } else {
+                    try {
+                      const data: OrderManagement.AppInfoRes = JSON.parse(body);
+                      const appInfos: OrderManagement.AppInfos2 = {}
+                      data.data.appInfos.forEach((val, index, arr) => {
+                        const gameZones = {}
+                        val.gameZones.forEach(val => {
+                          gameZones[val.appId + "-" + val.gameZoneId] = val
+                        });
+                        (val.appInfo as OrderManagement.AppInfo2).gameZones = gameZones
+                        appInfos[
+                          val.appInfo.appId
+                        ] = val.appInfo as OrderManagement.AppInfo2
+                      })
+                      data.data.appInfos = appInfos as any
+                      resolve(data);
+                    } catch (e) {
+                      resolve({ code: 500, message: body })
+                    }
+                  }
+                })
             }
           })
-          break;
         case "games":
           return new Promise((r, j) => {
             let url = BASE_URL + "/pocketgames/appInfo/list/SDK/" + version;
             Request(url, function (err, httpResponse, body) {
               if (err) {
                 console.error(err);
+                return;
+              }
+              let data;
+              try {
+                data = JSON.parse(body);
+              } catch (e) {
+                console.log(e);
+              }
+              if (data) {
+                data.version = version;
+                r(data);
               } else {
-                if (body) {
-                  let data = JSON.parse(body);
-                  data.version = version;
-                  r(data);
-                } else {
-                  r(body);
-                }
+                r({ code: 500, message: body });
               }
             });
           })
-          break;
         case "channelGames":
           return new Promise((r, j) => {
             Request(BASE_URL + "/pocketgames/channel/allGames", function (
@@ -72,17 +122,22 @@ export default {
             ) {
               if (err) {
                 console.error(err);
+                return;
+              }
+              let data;
+              try {
+                data = JSON.parse(body);
+              } catch (e) {
+                console.log(e);
+              }
+              if (data) {
+                data.version = version;
+                r(data);
               } else {
-                if (body) {
-                  let data = JSON.parse(body);
-                  r(data);
-                } else {
-                  r(body);
-                }
+                r({ code: 500, message: body });
               }
             });
           })
-          break;
       }
     },
     post: (root: any, { options: { name, version, data: $data } }) => {
@@ -90,32 +145,37 @@ export default {
       let bd = getUrlencodedBody($data);
       let channelNames = ["zones", "channels"];//post
       return new Promise((r, j) => {
-
         switch (name) {
           case "zones":
             url = BASE_URL + "/pocketgames/game/gameZoneInfo/list/SDK/" + version;
             bd = getUrlencodedBody({ appId: $data.appId, pageCount: $data.pageCount });;
-            break;
+            break
           case "mainZoneList":
             url = `${BASE_URL}/pocketgames/game/gameZoneInfo/mainZoneList/SDK/${version}/${$data.appId}`;
-            break;
+            break
           case "channels":
             url = `${BASE_URL}/pocketgames/channel/list`;
-            break;
+            break
         }
         if (channelNames.indexOf(name) === -1) {
           Request(url, function (err, httpResponse, body) {
             if (err) {
               console.error(err);
-            } else {
-              if (body) {
-                let data = JSON.parse(body);
-                data.version = version;
-                r(data);
-              } else {
-                r(body);
-              }
+              return;
             }
+            let data;
+            try {
+              data = JSON.parse(body);
+            } catch (e) {
+              console.log(e);
+            }
+            if (data) {
+              data.version = version;
+              r(data);
+            } else {
+              r({ code: 500, message: body });
+            }
+
           });
         } else {
           Request.post({
@@ -126,15 +186,19 @@ export default {
             function (err, httpResponse, body) {
               if (err) {
                 console.error(err);
+                return;
+              }
+              let data;
+              try {
+                data = JSON.parse(body);
+              } catch (e) {
+                console.log(e);
+              }
+              if (data) {
+                data.version = version;
+                r(data);
               } else {
-                if (body) {
-                  // console.log(body)
-                  let data = JSON.parse(body);
-                  data.version = version;
-                  r(data);
-                } else {
-                  r(body);
-                }
+                r({ code: 500, message: body });
               }
             }
           );
@@ -144,24 +208,26 @@ export default {
   },
 
   Mutation: {
-    oa: (root: any, args: OA.Args) => {
-      switch (args.options.name) {
-        case OA_CONST.QUERY.DEPARTMENT_LIST:
-          console.log(OA_CONST.QUERY.DEPARTMENT_LIST)
-          return OA_RESOLVER.query.departmentList(args.options.data.access_token)
-          break
-        case OA_CONST.QUERY.USER_LIST:
-          console.log(OA_CONST.QUERY.USER_LIST)
-          return OA_RESOLVER.query.userList(args.options.data.access_token, args.options.data.department_id, args.options.data.fetch_child)
-          break
-        case OA_CONST.QUERY.USER_INFO:
-          console.log(OA_CONST.QUERY.USER_INFO)
-          return OA_RESOLVER.query.userInfo(args.options.data.access_token, args.options.data.code)
-          break
-        case OA_CONST.QUERY.USER:
-          console.log(OA_CONST.QUERY.USER)
-          return OA_RESOLVER.query.user(args.options.data.access_token, args.options.data.userid)
-          break
+    oa: (root: any, { options: { name, access_token, code, id, department_id, fetch_child, userid, UserId } }, context) => {
+      switch (name) {
+        case Const.QUERY.ACCESS_TOKEN:
+          console.log(Const.QUERY.ACCESS_TOKEN)
+          return OA_RESOLVER.query.accessToken()
+        case Const.QUERY.DEPARTMENT_LIST:
+          console.log(Const.QUERY.DEPARTMENT_LIST)
+          return OA_RESOLVER.query.departmentList(access_token, id)
+        case Const.QUERY.USER_LIST:
+          console.log(Const.QUERY.USER_LIST)
+          return OA_RESOLVER.query.userList(access_token, department_id, fetch_child)
+        case Const.QUERY.USER_INFO:
+          console.log(Const.QUERY.USER_INFO)
+          return OA_RESOLVER.query.userInfo(access_token, code)
+        case Const.QUERY.USER:
+          console.log(Const.QUERY.USER)
+          return OA_RESOLVER.query.user(access_token, userid)
+        case Const.QUERY.CODE:
+          console.log(Const.QUERY.CODE)
+          return OA_RESOLVER.query.code(UserId)
       }
     },
 
@@ -180,43 +246,39 @@ export default {
         switch (name) {
           case "verify":
             url += "/pocketgames/orderRepair/verifyOrder/SDK/" + version;
-            break;
+            break
           case "repair":
             url += "/pocketgames/orderRepair/repair";
-            break;
+            break
           case "mergeZone":
             url += "/pocketgames/game/gameZoneInfo/combine/SDK/" + version;
-            break;
+            break
           case "editZoneInfo":
             url += "/pocketgames/game/gameZoneInfo/update/SDK/" + version;
-            break;
+            break
           case "addZoneInfo":
             url += "/pocketgames/game/gameZoneInfo/add/SDK/" + version;
-            break;
-
+            break
           case "deletechannel":
             url += "/pocketgames/channel/delete";
-            break;
+            break
           case "editchannelInfo":
             url += "/pocketgames/channel/edit";
-            break;
+            break
           case "addchannelInfo":
             if (version === '1') {
               url += "/pocketgames/channel/saveChildren";
-              break;
+              break
             } else if (version === '2') {
               url += "/pocketgames/channel/saveParent";
-              break;
+              break
             }
-
-
           default:
             url += "/pocketgames/orderRepair/payInfo/SDK/" + version;
-            break;
+            break
         }
         console.log(url);
         if (zoneNames.indexOf(name) !== -1) {
-
           let bd = getUrlencodedBody(data);
           console.log(bd);
           Request.post(
@@ -228,21 +290,22 @@ export default {
             function (err, httpResponse, body) {
               if (err) {
                 console.error(err);
-              } else {
-                if (body) {
-                  try {
-                    let data = JSON.parse(body);
-                    data.version = version;
-                    console.log(data);
-                    r(data);
-                  } catch (err) {
-                    r(body);
-                  }
-
-                } else {
-                  r(body);
-                }
+                return;
               }
+              let data;
+              try {
+                data = JSON.parse(body);
+              } catch (e) {
+                console.log(e)
+              }
+              if (data) {
+                data.version = version;
+                r(data);
+
+              } else {
+                r({ code: 500, message: body });
+              }
+
             }
           );
         } else {
@@ -255,72 +318,78 @@ export default {
             function (err, httpResponse, body) {
               if (err) {
                 console.error(err);
-              } else {
-                console.log(body);
-                if (body) {
-                  let data = JSON.parse(body);
-                  data.version = version;
-                  if (data.code === 200 && name === "verify" && version === "2") {
-                    Request.post(
-                      {
-                        url: BASE_URL + "/pocketgames/orderRepair/payInfo/SDK/2",
-                        headers: {
-                          "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                          appId: data.data.orderInfo.appId,
-                          advChannel: data.data.orderInfo.advChannel,
-                          channelId: data.data.orderInfo.channel,
-                          cardCode: data.data.orderInfo.cardCode
-                        })
+                return;
+              }
+              console.log(body);
+              let data;
+              try {
+                data = JSON.parse(body);
+              } catch (e) {
+                console.log(e);
+              }
+              if (data) {
+                data.version = version;
+                if (data.code === 200 && name === "verify" && version === "2") {
+                  Request.post(
+                    {
+                      url: BASE_URL + "/pocketgames/orderRepair/payInfo/SDK/2",
+                      headers: {
+                        "Content-Type": "application/json"
                       },
-                      function (err, httpResponse, res) {
-                        if (err) {
-                          console.error(err);
-                          return;
-                        }
-                        if (res) {
-                          // console.log(res);
-                          data.data.products = JSON.parse(res).data.products;
-                          r(data);
-                        }
+                      body: JSON.stringify({
+                        appId: data.data.orderInfo.appId,
+                        advChannel: data.data.orderInfo.advChannel,
+                        channelId: data.data.orderInfo.channel,
+                        cardCode: data.data.orderInfo.cardCode
+                      })
+                    },
+                    function (err, httpResponse, res) {
+                      if (err) {
+                        console.error(err);
+                        return;
                       }
-                    );
-                  } else if (
-                    data.code === 200 &&
-                    name === "Verify" &&
-                    version === "1"
-                  ) {
-                    Request.post(
-                      {
-                        url: BASE_URL + "/pocketgames/orderRepair/payInfo/SDK/1",
-                        headers: {
-                          "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                          confId: data.data.orderInfo.confId,
-                          channelId: data.data.orderInfo.payWay
-                        })
+                      if (res) {
+                        // console.log(res);
+                        data.data.products = JSON.parse(res).data.products;
+                        r(data);
+                      }
+                    }
+                  );
+                } else if (
+                  data.code === 200 &&
+                  name === "verify" &&
+                  version === "1"
+                ) {
+                  Request.post(
+                    {
+                      url: BASE_URL + "/pocketgames/orderRepair/payInfo/SDK/1",
+                      headers: {
+                        "Content-Type": "application/json"
                       },
-                      function (err, httpResponse, res) {
-                        if (err) {
-                          console.error(err);
-                          return;
-                        }
-                        if (res) {
-                          data.data.products = JSON.parse(res).data.products;
-                          r(data);
-                        }
+                      body: JSON.stringify({
+                        confId: data.data.orderInfo.confId,
+                        channelId: data.data.orderInfo.payWay
+                      })
+                    },
+                    function (err, httpResponse, res) {
+                      if (err) {
+                        console.error(err);
+                        return;
                       }
-                    );
-                  } else {
-                    r(data);
-                  }
+                      if (res) {
+                        data.data.products = JSON.parse(res).data.products;
+                        r(data);
+                      }
+                    }
+                  );
                 } else {
-                  r(body);
+                  r(data);
                 }
+              } else {
+                r({ code: 500, message: body });
               }
             }
+
           );
         }
       });
@@ -328,7 +397,7 @@ export default {
 
     addMessage: (root: any, { input }, { pubsub, db }) => {
       const message = {
-        id: shortid.generate(),
+        // id: shortid.generate(),
         text: input.text
       };
 
@@ -345,8 +414,7 @@ export default {
     },
 
     singleUpload: (root: any, { file }, { processUpload }) => processUpload(file),
-    multipleUpload: (root: any, { files }, { processUpload }) =>
-      Promise.all(files.map(processUpload))
+    multipleUpload: (root: any, { files }, { processUpload }) => Promise.all(files.map(processUpload))
   },
 
   Subscription: {

@@ -1,0 +1,93 @@
+// skin_1
+
+.relative {
+  position: relative;
+}
+.pointer {
+  cursor: pointer;
+}
+.approve_desc_page {
+  display: flex;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0;
+  width: 1000px;
+  flex-shrink: 0;
+  .item {
+    display: flex;
+    align-items: center;
+  }
+  .el-col {
+    padding: 0;
+    margin: 0;
+    width: auto;
+    &:first-child {
+      margin-left: 10px;
+    }
+    &.label {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    &.value {
+      margin: 0 24px 0 8px;
+    }
+    &.fixed {
+      color: rgb(156, 156, 156);
+      font-size: 16px;
+    }
+  }
+  .el-row--flex {
+    min-height: 48px;
+    align-items: center;
+  }
+  .el-input__inner {
+    min-width: 60px;
+  }
+  .el-input__inner,
+  .el-textarea__inner {
+    font-size: 14px;
+    background: transparent;
+    border: 0;
+    margin: 10px 0;
+    padding: 0 8px;
+    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.5);
+  }
+  .el-textarea__inner {
+    min-height: 48px !important;
+    padding: 8px 12px;
+    overflow: hidden;
+  }
+  .el-input__prefix {
+    display: none;
+  }
+}
+
+.full {
+  width: 100% !important;
+  flex-shrink: 1;
+}
+.v_required_submit.v_required_error input,
+.v_required_submit.v_required_error textarea,
+.v_required_submit.v_required_error .el-radio__inner,
+.v_required_submit.v_required_error .el-checkbox__inner {
+  border: 2px solid rgba(250, 0, 0, 0.4);
+}
+
+.hidden {
+  visibility: hidden;
+}
+.mt-16 {
+  margin-top: 16px;
+}
+.mr-16 {
+  margin-right: 16px;
+}
+.mb-16 {
+  margin-bottom: 16px;
+}
+.ml-16 {
+  margin-left: 16px;
+}

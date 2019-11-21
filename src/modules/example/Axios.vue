@@ -5,19 +5,21 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 export default Vue.extend({
   created() {
+
     this['$http'].post('/oa/user/userInfo', {
       userId: 'shindousaigo'
-    }).then(function () {
-      console.log(arguments)
+    }).then(function ({ data }) {
+      console.log(data)
     })
 
-    this['$http'].post('/oa/leave/allInfo', {
-      userId: 'shindousaigo'
-    }).then(function () {
-      console.log(arguments)
-    })
+    // this['$http'].get('/oa/leave/allInfo', {
+    //   userId: 'shindousaigo'
+    // }).then(function () {
+    //   console.log(arguments)
+    // })
 
 
   }

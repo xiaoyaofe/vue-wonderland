@@ -27,11 +27,22 @@ import {
   RadioButton,
   RadioGroup,
   DatePicker,
+  TimeSelect,
   Tree,
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Slider
+  Slider,
+  OptionGroup,
+  Collapse,
+  CollapseItem,
+  Notification,
+  Popover,
+  Upload,
+  Tag,
+  MessageBox,
+  Checkbox,
+  CheckboxGroup
 } from "element-ui";
 
 require("element-ui/lib/theme-chalk/base.css")
@@ -71,9 +82,6 @@ require("element-ui/lib/theme-chalk/base.css")
 {
   require("element-ui/lib/theme-chalk/card.css");
   Vue.use(Card);
-}
-{
-  require("element-ui/lib/theme-chalk/notification.css");
 }
 {
   require("element-ui/lib/theme-chalk/container.css");
@@ -144,6 +152,10 @@ require("element-ui/lib/theme-chalk/base.css")
   Vue.use(DatePicker);
 }
 {
+  require("element-ui/lib/theme-chalk/time-select.css");
+  Vue.use(TimeSelect);
+}
+{
   require("element-ui/lib/theme-chalk/tree.css");
   Vue.use(Tree);
 }
@@ -163,3 +175,42 @@ require("element-ui/lib/theme-chalk/base.css")
   require("element-ui/lib/theme-chalk/slider.css");
   Vue.use(Slider);
 }
+{
+  require("element-ui/lib/theme-chalk/option-group.css");
+  Vue.use(OptionGroup);
+}
+{
+  require("element-ui/lib/theme-chalk/collapse.css");
+  require("element-ui/lib/theme-chalk/collapse-item.css");
+  Vue.use(Collapse);
+  Vue.use(CollapseItem);
+}
+{
+  require("element-ui/lib/theme-chalk/popover.css");
+  Vue.use(Popover);
+}
+{
+  require("element-ui/lib/theme-chalk/upload.css");
+  Vue.use(Upload);
+}
+{
+  require("element-ui/lib/theme-chalk/tag.css");
+  Vue.use(Tag);
+}
+{
+  require("element-ui/lib/theme-chalk/checkbox.css");
+  Vue.use(Checkbox);
+}
+{
+  require("element-ui/lib/theme-chalk/checkbox-group.css");
+  Vue.use(CheckboxGroup);
+}
+{
+  require("element-ui/lib/theme-chalk/notification.css");
+  Vue.prototype.$notify = Notification
+}
+{
+  require("element-ui/lib/theme-chalk/message-box.css");
+  Vue.prototype.$confirm = MessageBox.confirm
+}
+

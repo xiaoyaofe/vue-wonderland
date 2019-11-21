@@ -1,28 +1,28 @@
 # 查询所有的游戏
-query channelGames($version: String, $data: Any) {
-  get(options: { name: "channelGames", version: $version, data: $data })
+query channelGames($options:Any) {
+  get(options: $options)
 }
 
 # 查询对应游戏的渠道
-query channels($version: String, $data: Any) {
-  post(options: {version: $version,  name: "channels", data: $data })
+query channels($options: Any) {
+  post(options: $options)
 }
 #仅仅是为了刷新所设
-query refetchChannels($version: String, $data: Any) {
-  post(options: { version: $version, name: "channels", data: $data })
+query refetchChannels($options: Any) {
+  post(options:$options)
 }
 
 # 删除渠道
-mutation deletechannel($version: String, $data: Any) {
-  post(options: { version: $version, name: "deletechannel", data: $data })
+mutation deletechannel($options: Any) {
+  post(options: $options)
 }
 # 编辑渠道信息
-mutation editchannelInfo($version: String, $data: Any) {
-  post(options: { version: $version, name: "editchannelInfo", data: $data })
+mutation editchannelInfo($options: Any) {
+  post(options:$options)
 }
 # 添加新的渠道
-mutation addchannelInfo($version: String, $data: Any) {
-  post(options: { version: $version, name: "addchannelInfo", data: $data })
+mutation addchannelInfo($options: Any) {
+  post(options:$options)
 }
 
 

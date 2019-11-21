@@ -1,3 +1,35 @@
+import { Store, Vuex, Commit, $Commit } from "./vuex/index"
+
+declare module "vue/types/vue" {
+  interface Vue {
+    $language: "zh"
+    $hourCalculate: (h: number) => string
+    // $store: Store<any>
+    $dispatch: Vuex.OA.Actions
+    $getter: Vuex.OA.Getters
+    $commit: Vuex.OA.Mutations
+    $state: Vuex.OA.State
+  }
+}
+
+declare namespace BaseDataType {
+  type NumberBoolean = 0 | 1
+  /**
+   * 1：女
+   * 2：男
+   */
+  type GenderKind = "1" | "2"
+}
+
+type UploadFileList = {
+  name: string;
+  percentage: number;
+  raw: File;
+  size: number;
+  status: string;
+  uid: number;
+}[]
+
 type NumberBoolean = 0 | 1
 
 export namespace APOLLO {
@@ -20,18 +52,55 @@ export namespace OA {
         department_id: DEPARTMENT.DepartmentId
         fetch_child?: NumberBoolean
         userid: string
+        id: string
       }
     }
   }
-  interface ServerRes {
+  export interface ServerRes {
     /** 返回码 */
     errcode: number;
     /** 对返回码的文本描述内容 */
     errmsg: string;
   }
+  export interface RgServerResBase {
+    code: number
+    message: string
+  }
+  export type RgServerRes<R> = RgServerResBase & {
+    data: R
+  }
+  /**
+   * 获取所有假期类型
+   */
+  export interface LeaveAllType {
+    LeaveTypeList: {
+      id: number
+      leaveName: string
+      leaveDesc: string
+    }[]
+  }
+  /**
+  * 获取所有假期类型
+  */
+  export interface LeaveOvertimeDetailInfo {
+    useDetailInfoList: {
+      userId: string
+      leaveType: string
+      useDate: string
+      duration: number
+    }[]
+    overtimeInfoList: {
+      userId: string
+      overtimeType: string
+      overtimeTotal: number
+      overtimeDate: string
+    }[]
+  }
+
   export interface Res<T> {
     oa: T
   }
+
   export interface AccessTokenRes extends ServerRes {
     /** 获取到的凭证，最长为512字节 */
     access_token: string;
@@ -85,9 +154,81 @@ export namespace OA {
       userlist: User[]
     }
     export type UserRes = User & ServerRes
+    export type UserAll = any
+    // User & RgUser & RgLeaveInfo & RgOvertimeInfo
+    export interface RgUser {
+      alias: string
+      department: string
+      email: string
+      enable: number
+      entryDate: string
+      externalPosition: string
+      gender: string
+      id: number
+      isLeaderInDept: string
+      mobile: string
+      order: string
+      position: string
+      telephone: string
+      userId: string
+      userName: string
+      userStatus: number
+      workYears: number
+    }
+    export interface RgUserRes {
+      userInfo: RgUser
+    }
+    export interface UseDetailInfo {
+      id: number
+      serialNumber: string
+      userId: string
+      leaveType: string
+      useDate: string
+      startTime: string
+      endTime: string
+      duration: number
+    }
+    export interface ProduceDetailInfo {
+      id: number
+      userId: string
+      leaveTotal: number
+      useLeave: number
+      availableLeave: number
+      extraLeave: number
+      extraLeaveType: number
+      produceDate: string
+      expireDate: string
+      isReset: number
+    }
+    export interface RgLeaveInfo {
+      hrSettingInfoList: {
+        annualLeaveId: number
+        duration: number
+        id: number
+        leaveType: number
+        settingDate: string
+        settingType: number
+        userId: string
+      }[]
+      useDetailInfoList: UseDetailInfo[]
+      produceDetailInfoList: ProduceDetailInfo[]
+    }
+    export interface RgOvertimeInfo {
+      hrSettingInfoList: {
+        duration: number
+        id: number
+        leaveType: number
+        settingDate: string
+        settingType: number
+        userId: string
+      }[]
+      useDetailInfoList: UseDetailInfo[]
+      overtimeInfoList: ProduceDetailInfo[]
+    }
+
     export type UserInfoRes = {
       /** 成员UserID。若需要获得用户详情信息，可调用通讯录接口 */
-      UserId: number
+      UserId: string
       /** 手机设备号(由企业微信在安装时随机生成，删除重装会改变，升级不受影响) */
       DeviceId: number
     } & ServerRes
@@ -113,6 +254,27 @@ export namespace OA {
     }
   }
 
+  /** 角色授权信息 */
+  export interface UserPermission {
+    roleInfo: {
+      permissionLevel: number // 授权等级 1-15
+      roleDescription: string // 角色信息描述
+      roleId: number // 角色id
+      roleName: string // 角色名称
+      roleStatus: 0 | 1 // 角色状态
+    }
+  }
 
+  /** action */
+  export interface ActionArg1<R, P> {
+    state: any
+    commit: any
+    dispatch: any
+    getters: any
+    rootGetters: any
+    rootState: {
+      [key in keyof $Commit]: any
+    }
+  }
 
 }

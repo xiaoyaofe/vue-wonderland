@@ -2,11 +2,8 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <ul>
-      <li
-        v-for="item in modules"
-        :key="item.route"
-      >
-        <a :href="'/' + item.route">{{item.name}}</a>
+      <li v-for="item in modules" :key="item.route">
+        <a :href="'/' + item.route">{{ item.name }}</a>
       </li>
     </ul>
   </div>
@@ -18,16 +15,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
-  modules = [
-    { route: 'order-management', name: '订单管理' },
-    { route: 'zone-management', name: '区服管理' },
-    { route: 'channel-management', name: '渠道管理' },
-    { route: 'data-query', name: 'DataQuery 数据查询' },
-    { route: 'apollo', name: 'Apollo 示例' },
-    { route: 'oa', name: 'OA系统' },
-    { route: 'axios', name: 'Axios 示例' },
-    { route: 'pixel', name: 'Pixel 示例' },
-  ]
+  modules = [{ route: "order-management", name: "订单管理" }, { route: "zone-management", name: "区服管理" }, { route: "channel-management", name: "渠道管理" }, { route: "data-query", name: "DataQuery 数据查询" }, { route: "apollo", name: "Apollo 示例" }, { route: "oa", name: "OA系统" }, { route: "axios", name: "Axios 示例" }, { route: "pixel", name: "Pixel 示例" }];
 }
 </script>
 

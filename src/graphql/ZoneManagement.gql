@@ -1,27 +1,27 @@
 # 查询所有的游戏
-query games($version: String, $data: Any) {
-  get(options: { name: "games", version: $version, data: $data })
+query games($options: Any) {
+  get(options: $options)
 }
 
 # 查询对应游戏的区服
-query zones($version: String, $data: Any) {
-  post(options: { name: "zones", version: $version, data: $data })
+query zones($options: Any) {
+  post(options: $options)
 }
 # 版本二添加区服时查询主区信息
-query mainZoneList($version: String, $data: Any) {
-  post(options: { name: "mainZoneList", version: $version, data: $data })
+query mainZoneList($options: Any) {
+  post(options: $options)
 }
 
 # 合区
-mutation mergeZone($version: String, $data: Any) {
-  post(options: { name: "mergeZone", version: $version, data: $data })
+mutation mergeZone($options: Any) {
+  post(options:$options)
 }
 # 更改区服的信息
-mutation editZoneInfo($version: String, $data: Any) {
-  post(options: { name: "editZoneInfo", version: $version, data: $data })
+mutation editZoneInfo($options: Any) {
+  post(options: $options)
 }
 # 添加新的区服
-mutation addZoneInfo($version: String, $data: Any) {
-  post(options: { name: "addZoneInfo", version: $version, data: $data })
+mutation addZoneInfo($options: Any) {
+  post(options:$options)
 }
 

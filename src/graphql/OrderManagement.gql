@@ -1,57 +1,29 @@
-query AppInfos($version: String, $data: Any) {
-  get(options: {
-    name: "appInfos",
-    version: $version,
-    data: $data
-  }) 
+query AppInfos($options: Any) {
+  get(options: $options) 
 }
 
-mutation AdvChannels($version: String, $data: Any) {
-  post(options: {
-    name: "advChannels",
-    version: $version,
-    data: $data
-  })
+mutation AdvChannels($options: Any) {
+  post(options: $options)
 }
 
-mutation PayChannels($version: String, $data: Any) {
-   post(options: {
-    name: "payChannels",
-    version: $version,
-    data: $data
-  })
+mutation PayChannels($options: Any) {
+   post(options: $options)
 }
 
-mutation PayWays($version: String, $data: Any) {
-   post(options: {
-    name: "payWays",
-    version: $version,
-    data: $data
-  })
+mutation PayWays( $options: Any) {
+   post(options: $options)
 }
 
-mutation Products($version: String, $data: Any) {
-  post(options: {
-    name: "products",
-    version: $version,
-    data: $data
-  })
+mutation Products($options: Any) {
+   post(options: $options)
 }
 
-mutation Verify($version: String, $data: Any) {
-  post(options: {
-    name: "verify",
-    version: $version,
-    data: $data
-  })
+mutation Verify($options: Any) {
+  post(options: $options)
 }
 
-mutation Repair($version: String, $data: Any) {
-  post(options: {
-    name: "repair",
-    version: $version,
-    data: $data
-  })
+mutation Repair($options: Any) {
+   post(options: $options)
 }
 
 

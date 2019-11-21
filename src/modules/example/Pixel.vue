@@ -1,12 +1,12 @@
 <template>
-    <div>
-      活动页面
-      asdfasdfdsfas
-      afasdfsdaf
-      <button @click="dadian1">
-        sdfasdfsdafsdfdsa
-      </button>
-    </div>
+  <div>
+    活动页面
+    asdfasdfdsfas
+    afasdfsdaf
+    <button @click="dadian1">
+      sdfasdfsdafsdfdsa
+    </button>
+  </div>
 </template>
 
 
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Pixel from "@/service/pixel";
+import Pixel from "src/service/pixel";
 Pixel.instance.init({
   id: {
     fb: "asdfasdf",
@@ -31,7 +31,7 @@ export default Vue.extend({
       }
     });
   },
-  mounted() {},
+  mounted() { },
   methods: {
     dadian1() {
       Pixel.instance.pixel("dadian1");

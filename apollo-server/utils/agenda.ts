@@ -4,8 +4,6 @@ import { BASE_URL } from '../const';
 const cron = require("cron-scheduler")
 const request = require("request")
 
-console.log('1232asfasdfsfasf13')
-
 // 定时任务
 const job1 = async function () {
   request(
@@ -14,9 +12,12 @@ const job1 = async function () {
       if (error) {
         console.log("job1 v1 error: " + error)
       } else {
+
+        // console.log(body)
+  
         const data: OrderManagement.AppInfoRes = JSON.parse(body)
         const appInfos: OrderManagement.AppInfos2 = {}
-        data.data.appInfos.forEach((val, index, arr) => {
+        data.data.appInfos.forEach((val, index, arr) => {``
           const gameZones = {}
           const appId = val.appInfo.appId
           val.gameZones.forEach(val => {

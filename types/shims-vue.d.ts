@@ -1,9 +1,13 @@
 
+declare var $instance: any
+declare var process: NodeJS.Process
+
 interface Window {
   VueComponents: any;
   WwLogin: Function
   fbq: Function
   dataLayer: any[]
+  $instance: any
 }
 
 declare module "*.vue" {
@@ -135,31 +139,3 @@ declare namespace OrderManagement {
     zoneName: string;
   }
 }
-
-// declare namespace ZoneManagement {
-//   interface res {
-//     code: number;
-//     message: string;
-//     data: {
-//       appInfos: AppInfo;
-//     };
-//   }
-//   interface AppInfo {
-//     appAlias: string;
-//     appId: number;
-//     appKey: string;
-//     appName: string;
-//     appSecret: string;
-//     country: string;
-//     createTime: string;
-//     id: number;
-//     language: string;
-//     localName: string;
-//     modifyTime: string;
-//     noticeUrl: string;
-//     parentAppId: number;
-//     parentAppName: string;
-//     status: number;
-//     timeZone: number;
-//   }
-// }

@@ -1,24 +1,16 @@
 <template>
   <div class="home">
-    <img
-      class="logo"
-      src="@/assets/logo.jpg"
-    >
-    <HelloWorld :msg="msg" />
+    <img class="logo" :src="require(`src/assets/logo.jpg`)" />
+    <component :is="require(`src/components/HelloWorld.vue`).default" :msg="msg" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 
-@Component({
-  components: {
-    HelloWorld
-  }
-})
+@Component
 export default class Home extends Vue {
-  msg = 'NAVIGATION PAGE'
+  msg = "NAVIGATION PAGE";
 }
 </script>
 <style lang="scss">

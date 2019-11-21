@@ -1,7 +1,7 @@
 <template>
   <el-row class="channel-management" :gutter="0">
     <el-col :span="4" class="channel-col">
-      <ApolloQuery :query="require('@/graphql/ChannelManagement.gql').channelGames" :variables="{}"  @result="DoneOfGames">
+      <ApolloQuery :query="require('src/graphql/ChannelManagement.gql').channelGames" :variables="{name:'channelGames'}"  @result="DoneOfGames">
         <template slot-scope="{ result: { data } }">
           <el-aside width="16vw" style="min-width: 250px;background-color: rgb(238, 241, 246); height:100%">
             <el-menu :default-active="defaultGame" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
@@ -18,8 +18,8 @@
       </ApolloQuery>
     </el-col>
     <el-col :span="20" class="channel-col">
-      <ApolloQuery v-if='gameId' :query="require('@/graphql/ChannelManagement.gql').channels " 
-        :variables="{version:refetch + '',data:{appId: gameId}}" 
+      <ApolloQuery v-if='gameId' :query="require('src/graphql/ChannelManagement.gql').channels " 
+        :variables="{name:'channels',version:refetch + '',data:{appId: gameId}}" 
         @result="DoneOfChannels">
         <template slot-scope="{ result: { data} }">
           <el-row class="channel-title">
@@ -40,7 +40,7 @@
             <el-col :span="2" class="head-col">状态</el-col>
             <el-col :span="4" class="head-col">操作</el-col>
           </el-row>
-          <ApolloMutation :mutation="require('@/graphql/ChannelManagement.gql').deletechannel" @done="DoneOfDeleteChannel"> 
+          <ApolloMutation :mutation="require('src/graphql/ChannelManagement.gql').deletechannel" @done="DoneOfDeleteChannel"> 
             <template slot-scope="{ mutate }">
               <!-- 第一层 -->
               <el-row v-if="channels.length" v-for='(item,index) in channels' :key='index'>
@@ -166,7 +166,7 @@
 
         </el-form>
 
-        <ApolloMutation v-if='dialog.dialogVisibleAdd || dialog.dialogVisibleAddChildren' :mutation="require('@/graphql/ChannelManagement.gql').addchannelInfo" @done="DoneOfAddChannel">
+        <ApolloMutation v-if='dialog.dialogVisibleAdd || dialog.dialogVisibleAddChildren' :mutation="require('src/graphql/ChannelManagement.gql').addchannelInfo" @done="DoneOfAddChannel">
           <template slot-scope="{ mutate }">
             <div  slot="footer" class="dialog-footer">
               <el-row type="flex" justify='center'>
@@ -177,7 +177,7 @@
           </template>
         </ApolloMutation>
 
-        <ApolloMutation v-else-if="dialog.dialogVisibleEdit" :mutation="require('@/graphql/ChannelManagement.gql').editchannelInfo" @done="DoneOfEditChannel">
+        <ApolloMutation v-else-if="dialog.dialogVisibleEdit" :mutation="require('src/graphql/ChannelManagement.gql').editchannelInfo" @done="DoneOfEditChannel">
           <template slot-scope="{ mutate }">
             <div  slot="footer" class="dialog-footer">
               <el-row type="flex" justify='center'>
@@ -279,6 +279,7 @@ export default class ChannelManagement extends Vue {
       }).then(() => {
         mutate({
           variables: {
+            name:'deletechannel',
             data: {
               id
             }
@@ -297,6 +298,7 @@ export default class ChannelManagement extends Vue {
     if(this.dialog.dialogVisibleAddChildren){
       mutate({
         variables: {
+          name:"addchannelInfo",
           version: '1',
           data: {
             id: +this.form.data.id,
@@ -309,6 +311,7 @@ export default class ChannelManagement extends Vue {
     }else{
       mutate({
         variables: {
+           name:"addchannelInfo",
           version: '2',
           data: {
             gameId: +this.gameId,
@@ -326,6 +329,7 @@ export default class ChannelManagement extends Vue {
   handleEdit(mutate) {
     mutate({
       variables: {
+        name:"editchannelInfo",
         data: {
           id: +this.form.data.id,
           channelName: this.form.data.channelName,

@@ -1,28 +1,34 @@
-import Axios from 'axios';
-import { OA_CONST } from '../../utils/const';
-import { access_token, user_info } from '../../utils/db';
-import Chalk from 'chalk'
-import { OA } from 'types';
+import Axios from "axios"
+import { OA as Const } from "../../utils/const"
+import { access_token, user_info } from "../../utils/db"
+import { OA as OA_TYPES } from "types"
 
+export const code = function (UserId) {
+  return new Promise(function (resolve, reject) {
+    const jsonTable = user_info()
+    const code = jsonTable.get(UserId).value()
+    resolve(code || "")
+  })
+}
 
 export const accessToken = function () {
   return new Promise(function (resolve, reject) {
     const jsonTable = access_token()
-    const expires_timestamp: number = jsonTable.get(OA_CONST.ACCESS_TOKEN_EXP_TIMESTAMP).value()
+    const expires_timestamp: number = jsonTable.get(Const.ACCESS_TOKEN_EXP_TIMESTAMP).value()
     if (!expires_timestamp || expires_timestamp <= Date.now()) {
-      Axios.get(OA_CONST.BASE_URL + OA_CONST.QUERY_URL.ACCESS_TOKEN, {
+      Axios.get(Const.BASE_URL + Const.QUERY_URL.ACCESS_TOKEN, {
         params: {
-          corpid: OA_CONST.CORP_ID,
-          corpsecret: OA_CONST.CORP_SECRET,
+          corpid: Const.CORP_ID,
+          corpsecret: Const.CORP_SECRET,
         }
       }).then(function (response) {
         return response.data
-      }).then(function (data: OA.AccessTokenRes) {
+      }).then(function (data: OA_TYPES.AccessTokenRes) {
         if (data.errcode === 0) {
           const access_token = data.access_token
           const timestamp = Date.now()
           const expiresTimestamp = timestamp + data.expires_in * 1000
-          jsonTable.set(OA_CONST.ACCESS_TOKEN, access_token).set(OA_CONST.ACCESS_TOKEN_TIMESTAMP, timestamp).set(OA_CONST.ACCESS_TOKEN_EXP_TIMESTAMP, expiresTimestamp).write()
+          jsonTable.set(Const.ACCESS_TOKEN, access_token).set(Const.ACCESS_TOKEN_TIMESTAMP, timestamp).set(Const.ACCESS_TOKEN_EXP_TIMESTAMP, expiresTimestamp).write()
           resolve(access_token)
         } else {
           reject(data.errmsg)
@@ -31,24 +37,22 @@ export const accessToken = function () {
         reject(error)
       })
     } else {
-      resolve(jsonTable.get(OA_CONST.ACCESS_TOKEN).value())
+      resolve(jsonTable.get(Const.ACCESS_TOKEN).value())
     }
   })
 }
 
-export const departmentList = function (access_token: string) {
+export const departmentList = function (access_token: string, id?: string) {
   return new Promise(function (resolve, reject) {
     if (!access_token) {
       reject('!access_token')
       return
     }
-    Axios.get(OA_CONST.BASE_URL + OA_CONST.QUERY_URL.DEPARTMENT_LIST, {
-      params: {
-        access_token
-      }
+    Axios.get(Const.BASE_URL + Const.QUERY_URL.DEPARTMENT_LIST, {
+      params: id ? { access_token, id } : { access_token }
     }).then(function (response) {
       return response.data
-    }).then(function (data: OA.DEPARTMENT.DepartmentListRes) {
+    }).then(function (data: OA_TYPES.DEPARTMENT.DepartmentListRes) {
       if (data.errcode === 0) {
         resolve(data.department)
       } else {
@@ -71,16 +75,20 @@ export const userInfo = function (access_token: string, code: string) {
     if (res) {
       resolve(res)
     } else {
-      Axios.get(OA_CONST.BASE_URL + OA_CONST.QUERY_URL.USER_INFO, {
+      Axios.get(Const.BASE_URL + Const.QUERY_URL.USER_INFO, {
         params: {
           access_token,
           code
         }
       }).then(function (response) {
         return response.data
-      }).then(function (data: OA.ServerRes) {
+      }).then(function (data: OA_TYPES.USER.UserInfoRes) {
         if (data.errcode === 0) {
-          jsonTable.set(code, data).write()
+          const preCode = jsonTable.get(data.UserId).value()
+          jsonTable.set(code, data).set(data.UserId, code).write()
+          if (preCode) {
+            jsonTable.unset(preCode).write()
+          }
           resolve(data)
         } else {
           reject(data.errmsg)
@@ -98,7 +106,7 @@ export const userList = function (access_token: string, department_id: number, f
       reject('!access_token || !department_id')
       return
     }
-    Axios.get(OA_CONST.BASE_URL + OA_CONST.QUERY_URL.USER_LIST, {
+    Axios.get(Const.BASE_URL + Const.QUERY_URL.USER_LIST, {
       params: {
         access_token,
         department_id,
@@ -106,7 +114,7 @@ export const userList = function (access_token: string, department_id: number, f
       }
     }).then(function (response) {
       return response.data
-    }).then(function (data: OA.USER.UserListRes) {
+    }).then(function (data: OA_TYPES.USER.UserListRes) {
       if (data.errcode === 0) {
         resolve(data.userlist)
       } else {
@@ -124,14 +132,14 @@ export const user = function (access_token: string, userid: string) {
       reject('!access_token || !userid')
       return
     }
-    Axios.get(OA_CONST.BASE_URL + OA_CONST.QUERY_URL.USER, {
+    Axios.get(Const.BASE_URL + Const.QUERY_URL.USER, {
       params: {
         access_token,
         userid
       }
     }).then(function (response) {
       return response.data
-    }).then(function (data: OA.USER.UserRes) {
+    }).then(function (data: OA_TYPES.USER.UserRes) {
       if (data.errcode === 0) {
         resolve(data)
       } else {
