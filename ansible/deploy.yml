@@ -4,7 +4,7 @@
   remote_user: root
   gather_facts: False
   vars:
-      program_path: "/data/{{ project }}/dev"
+      program_path: "/data/{{ project }}/frontend"
       backup_root_path: "/data/server_bak/{{ project }}"
       archive_path: "/data/server_bak/archive_file/{{ project }}"
       archive_file: "{{ archive_path }}/{{ arch_file }}"
@@ -30,7 +30,7 @@
           chdir: "{{ backup_root_path }}"
 
     - name: archive file
-      shell: zip -qr {{ archive_file }} dev && echo "{{ archive_file }} archive file success" || echo "archive file failed"
+      shell: zip -qr {{ archive_file }} frontend && echo "{{ archive_file }} archive file success" || echo "archive file failed"
       args:
           chdir: "{{ backup_root_path }}"
    

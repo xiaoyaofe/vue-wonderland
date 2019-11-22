@@ -2,7 +2,7 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oa"
-        ppath = "/data/k8s/packages/prod/frontend"
+        ppath = "/data/k8s/packages/test/frontend"
     }
     stages {
         stage('DEPLOY') {
@@ -19,8 +19,8 @@ pipeline {
                             cd ansible
                             src_file="${ppath}/${project}/$(date '+%Y%m%d')/${filename}"
                             dest_file="/data/server_new/${filename}"
-                            arch_file="${project}-$(date '+%Y%m%d%H%M%S').zip"
-                            ansible-playbook -i hosts deploy.yml --extra-var "src_file=${src_file} dest_file=${dest_file} project=oa-management arch_file=${arch_file}"
+                            arch_file="${project}-test-$(date '+%Y%m%d%H%M%S').zip"
+                            ansible-playbook -i hosts deploy.yml --extra-var "src_file=${src_file} dest_file=${dest_file} project=oa-test arch_file=${arch_file}"
                             rm -f *.retry
                             /bin/sh notify.sh "deploy success" "${JOB_NAME}" "${BUILD_NUMBER}"
                         '''
@@ -36,10 +36,10 @@ pipeline {
     post {
         success {
             sh '''
-                if curl -I http://oas.royale.com 2>&1 | grep -q 200 ; then
-                    /bin/sh ansible/notify.sh "http://oas.royale.com check success" "${JOB_NAME}" "${BUILD_NUMBER}"
+                if curl -I http://oa-dev.royale.com 2>&1 | grep -q 200 ; then
+                    /bin/sh ansible/notify.sh "http://oa-dev.royale.com check success" "${JOB_NAME}" "${BUILD_NUMBER}"
                 else
-                    /bin/sh ansible/notify.sh "http://oas.royale.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
+                    /bin/sh ansible/notify.sh "http://oa-dev.royale.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
                 fi
             '''
         }
