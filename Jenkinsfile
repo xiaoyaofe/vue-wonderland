@@ -2,7 +2,7 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oa"
-         = "/data/k8s/packages/prod/frontend"
+        ppath = "/data/k8s/packages/prod/frontend"
     }
     stages {
         stage('DEPLOY') {
