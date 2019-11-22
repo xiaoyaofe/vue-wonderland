@@ -1,0 +1,72 @@
+---
+
+- hosts: locale_royale_oa_01
+  remote_user: root
+  gather_facts: False
+  vars:
+      program_path: "/data/{{ project }}/dev"
+      backup_root_path: "/data/server_bak/{{ project }}"
+      archive_path: "/data/server_bak/archive_file/{{ project }}"
+      archive_file: "{{ archive_path }}/{{ arch_file }}"
+  tasks:
+    - name: create /data/server_new if it's not exist
+      file: dest=/data/server_new  mode=755 owner=root group=root state=directory
+
+    - name: create program_path if it's not exist
+      file: dest={{ program_path }} mode=755 owner=root group=root state=directory
+
+    - name: create back_root_path if it's not exist
+      file: dest={{ backup_root_path }} mode=755 owner=root group=root state=directory
+
+    - name: create archive_path if it's not exist
+      file: dest={{ archive_path }} mode=755 owner=root group=root state=directory
+
+    - name: copy file
+      copy: src={{ src_file }} dest={{ dest_file }}
+
+    - name: backup file
+      shell: rsync -ar --delete --exclude=logs/* --exclude=node_modules/* {{ program_path }} . && echo "backup success"  || echo "backup failed" 
+      args:
+          chdir: "{{ backup_root_path }}"
+
+    - name: archive file
+      shell: zip -qr {{ archive_file }} dev && echo "{{ archive_file }} archive file success" || echo "archive file failed"
+      args:
+          chdir: "{{ backup_root_path }}"
+   
+    - name: stop program
+      shell: ./control stop
+      args:
+          chdir: "{{ program_path }}"
+ 
+    - name: update program
+      unarchive: src={{ dest_file }} dest={{ program_path }} copy=no
+
+    - name: delete node_modules
+      file: path="{{ program_path }}/node_modules" state=absent 
+
+    - name: dos2unix control
+      shell: dos2unix ./control ; chmod u+x ./control
+      args:
+          chdir: "{{ program_path }}"
+
+    - name: build  program
+      shell: ./control build
+      args:
+          chdir: "{{ program_path }}"
+
+    - name: start program
+      shell: nohup ./control start >/dev/null 2>&1 &
+      args:
+          chdir: "{{ program_path }}"
+
+    - name: check program
+      shell: sleep 30 && ./control status
+      args:
+          chdir: "{{ program_path }}"
+    
+    - name: rm update file
+      file: path={{ dest_file }} state=absent
+
+    - name: nginx reload
+      shell: /usr/local/nginx/sbin/nginx -s reload
