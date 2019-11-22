@@ -2,8 +2,7 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oa"
-        ppath = "/data/packages/prod/frontend"
-        rpath = "/data/k8s/packages/prod/frontend"
+        ppath = "/data/k8s/packages/prod/frontend"
     }
     stages {
         stage('DEPLOY') {
@@ -12,13 +11,13 @@ pipeline {
                     try {
                         sh '''
                             workspace=$(pwd)
-                            mkdir -p ${rpath}/${project}/$(date '+%Y%m%d')
+                            mkdir -p ${ppath}/${project}/$(date '+%Y%m%d')
                             filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
                             zip -qr ${filename} *  -x Jenkinsfile -x ansible/ -x ansible/* 
-                            mv ${filename} ${rpath}/${project}/$(date '+%Y%m%d')/
+                            mv ${filename} ${ppath}/${project}/$(date '+%Y%m%d')/
 
                             cd ansible
-                            src_file="${rpath}/${project}/$(date '+%Y%m%d')/${filename}"
+                            src_file="${ppath}/${project}/$(date '+%Y%m%d')/${filename}"
                             dest_file="/data/server_new/${filename}"
                             arch_file="${project}-$(date '+%Y%m%d%H%M%S').zip"
                             ansible-playbook -i hosts deploy.yml --extra-var "src_file=${src_file} dest_file=${dest_file} project=oa-management arch_file=${arch_file}"
