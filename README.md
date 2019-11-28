@@ -1,6 +1,6 @@
-# Oa-Management
+## Oa-Management
 
-## 初始化 Initial
+### 初始化 Initial
 
 ```
 添加环境配置文件
@@ -10,7 +10,7 @@
 在runtime中通过 process.env.Vue_APP_**** 来获取环境变量
 ```
 
-## 项目开发
+### 项目开发
 ```
 npm run apollo
 ```
