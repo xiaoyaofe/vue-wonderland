@@ -18,7 +18,7 @@ yarn.lock
 *.sln
 *.sw*
 
-Jenkinsfile
-/ansible
 control
 
+ansible
+Jenkinsfile

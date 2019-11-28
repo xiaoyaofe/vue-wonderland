@@ -1,2 +1,0 @@
-[locale_royale]
-locale_royale_oa_01 hostname=locale_royale_oa_01  idc=xy  region=cn  ansible_ssh_host=172.16.3.66  ansible_ssh_port=16333
