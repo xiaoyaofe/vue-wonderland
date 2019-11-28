@@ -1,36 +1,21 @@
-# oa
+# Oa-Management
 
-## Project setup
-```
-npm install
-```
+## 初始化 Initial
 
-### Compiles and hot-reloads for development
 ```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
+添加环境配置文件
+选择 .env.development 或者 .env.production 其中一个配置文件
+复制并重命名为 .env 于项目的根目录 
+文件内的环境变量需以 'VUE_APP_' 开头
+在runtime中通过 process.env.Vue_APP_**** 来获取环境变量
 ```
 
-### Run your tests
+## 项目开发
 ```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
+npm run apollo
 ```
 
-### Run your end-to-end tests
-```
-npm run test:e2e
+## 项目发布
 ```
 
-### Run your unit tests
-```
-npm run test:unit
 ```
