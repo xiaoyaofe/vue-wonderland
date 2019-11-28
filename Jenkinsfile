@@ -13,7 +13,7 @@ pipeline {
                             workspace=$(pwd)
                             mkdir -p ${ppath}/${project}/$(date '+%Y%m%d')
                             filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
-                            zip -qr ${filename} *  -x Jenkinsfile -x ansible/ -x ansible/* 
+                            zip -qr ${filename} .[^.]*  -x Jenkinsfile -x ansible/ -x ansible/* 
                             mv ${filename} ${ppath}/${project}/$(date '+%Y%m%d')/
 
                             cd ansible
