@@ -2,7 +2,7 @@
   <div class="oa">
     <div v-if="qrCodeState === 1" class="wwlogin" id="wwlogin_oa"></div>
     <div v-else-if="qrCodeState === 0" class="main">
-      <h1 class="title">{{ title }}</h1>
+      <h1 class="title">{{ title }} 111</h1>
       <el-tabs v-model="active_name">
         <el-tab-pane v-for="({ name, label, component }, index) in menu" :key="index" :label="label" :name="name">
           <div v-if="condition">
