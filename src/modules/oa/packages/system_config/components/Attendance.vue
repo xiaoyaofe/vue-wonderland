@@ -175,7 +175,7 @@
       :pageSize="$store.state.oa.SystemConfig.Attendance.offset"
       :total="$store.state.oa.SystemConfig.Attendance.query.length"
       @current-change="paginationChange"
-      style="margin-top:16px"
+      style="margin: 20px 0 16px 0"
     >
     </el-pagination>
 
@@ -222,7 +222,7 @@ export default class Attendance extends Vue {
 
   paginationChange(page) {
     this.$store.commit("oa/SystemConfig", {
-      child: "attendance",
+      child: "Attendance",
       key: "start",
       val: Attendance.storeState.offset * (page - 1)
     })

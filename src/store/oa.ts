@@ -657,7 +657,7 @@ export default {
       }>) {
         if (res.code === 200) {
           $commit.SystemConfig({
-            child: "attendance",
+            child: "Attendance",
             key: "query",
             val: res.data.dataWeekWorkList.sort(function (a, b) {
               return new Date(a.leaveInLieuDate) > new Date(b.leaveInLieuDate) ? 1 : -1
@@ -683,7 +683,7 @@ export default {
           $notify.success(res.message)
           data.id = res.data.id
           $commit.SystemConfig({
-            child: "attendance",
+            child: "Attendance",
             key: "query",
             val: Array.prototype.concat([], [data], $state.SystemConfig.Attendance.query)
           })
@@ -713,7 +713,7 @@ export default {
           const query = JSON.parse(JSON.stringify($state.SystemConfig.Attendance.query))
           query[index] = data
           $commit.SystemConfig({
-            child: "attendance",
+            child: "Attendance",
             key: "query",
             val: query
           })
