@@ -873,6 +873,29 @@ export default {
         }
       })
     }),
+     /* 未补签考勤记录查询 */
+    attendanceNoSignInquery: action(function ({ $post, $commit, $notify }, data: {
+      userId: string //	是	用户ID
+      startTime: string //	是	需要查询的开始日期 格式如：2019- 02 - 25
+      endTime: string //	是	需要查询的结束日期 格式如：2019-03 - 24
+    }) {
+      return $post("/attendance/noSignInquery", data).then(function (res: RG_SERVER_RES<{
+        recordInfoList: {
+          "id": number;
+          "userId": string;
+          "checkInDate": string;   //需补签日期
+          "checkInType": number;
+          "checkInReason": number;            //1=迟到 2=下班未打卡 3=旷工
+          "isCheck": number;
+        }[]
+      }>) {
+        if (res.code === 200) {
+          return res
+        } else {
+          $notify.error(res.message)
+        }
+      })
+    }),
     /** 查询页面展示的考勤记录 */
     attendanceMonthlySummary: action(function ({ $post, $commit, $notify }, data: {
       userId: string //	是	用户ID
