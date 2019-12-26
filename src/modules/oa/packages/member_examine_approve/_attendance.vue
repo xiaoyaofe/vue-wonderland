@@ -394,7 +394,7 @@
 				});
 			}
 		}
-		noSignInquerys = null;
+		noSignInquerys = [];
 		async getNoSignInquery() {
 			this.$store
 				.dispatch("oa/attendanceNoSignInquery", {

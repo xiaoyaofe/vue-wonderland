@@ -199,6 +199,7 @@ export namespace OA {
       produceDate: string
       expireDate: string
       isReset: number
+      remark:string
     }
     export interface RgLeaveInfo {
       hrSettingInfoList: {
