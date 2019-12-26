@@ -209,7 +209,8 @@ export namespace OA {
         leaveType: number
         settingDate: string
         settingType: number
-        userId: string
+        userId: string,
+        remark:string
       }[]
       useDetailInfoList: UseDetailInfo[]
       produceDetailInfoList: ProduceDetailInfo[]
