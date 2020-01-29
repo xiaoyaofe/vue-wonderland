@@ -75,11 +75,17 @@
 				<el-col class="label">日期：</el-col>
 				<el-col class="value fixed">{{ model.checkInDate }}</el-col>
 			</el-row>
-      	<div v-if="noSignInquerys.length > 0">
-					<p style="margin-bottom:10px;">您本月的未补签的记录：</p>
-					<p style="font-weight:bold;color:red;text-indent:1em;" v-for="(item, index) in noSignInquerys">{{ `${index+1}.  ${item.userId} -- ${item.checkInDate} -- ` }}{{item.checkInReason | checkInReason}}</p>
+			<div v-if="(noSignInquerys && noSignInquerys.length > 0) || (noSignInquerysLast && noSignInquerysLast.length > 0)">
+				<div v-if="noSignInquerysLast && noSignInquerysLast.length > 0">
+					<p style="margin-bottom:10px;">您上月的未补签的记录：</p>
+					<p style="font-weight:bold;color:red;text-indent:1em;" v-for="(item, index) in noSignInquerysLast">{{ `${index + 1}.  ${item.userId} -- ${item.checkInDate} -- ` }}{{ item.checkInReason | checkInReason }}</p>
 				</div>
-				<div v-else>您本月不需要补签</div>
+				<div v-if="noSignInquerys && noSignInquerys.length > 0">
+					<p style="margin-bottom:10px;">您本月的未补签的记录：</p>
+					<p style="font-weight:bold;color:red;text-indent:1em;" v-for="(item, index) in noSignInquerys">{{ `${index + 1}.  ${item.userId} -- ${item.checkInDate} -- ` }}{{ item.checkInReason | checkInReason }}</p>
+				</div>
+			</div>
+			<div v-else>您本月不需要补签</div>
 
 			<el-row type="flex">
 				<el-col class="label">签卡人：</el-col>
@@ -394,20 +400,32 @@
 				});
 			}
 		}
+		noSignInquerysLast = [];
 		noSignInquerys = [];
 		async getNoSignInquery() {
 			this.$store
 				.dispatch("oa/attendanceNoSignInquery", {
 					userId: this.userId,
 					// userId: 'kk',
-					startTime: this.model.startTime2,
-					endTime: this.model.endTime2
+					startTime: this.model.startTime1,
+					endTime: this.model.endTime1
 				})
 				.then(res => {
 					if (res.code === 200) {
-						this.noSignInquerys = res.data.recordInfoList;
+						this.noSignInquerysLast = res.data.recordInfoList;
 					}
 				});
+			setTimeout(() => {
+				this.$store
+					.dispatch("oa/approvalCheckInRecord", {
+						startTime: this.model.startTime2,
+						endTime: this.model.endTime2,
+						userId: localStorage.UserId
+					})
+					.then(res => {
+						this.noSignInquerys = res.data.recordInfoList;
+					});
+			}, 1);
 		}
 	}
 </script>
