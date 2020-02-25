@@ -29,7 +29,7 @@
   "javascript.updateImportsOnFileMove.enabled": "never",
   "window.zoomLevel": 0,
   "terminal.integrated.fontFamily": "monospace",
-  "search.location": "panel",
+  //"search.location": "panel",
   "workbench.activityBar.visible": true,
   "breadcrumbs.enabled": false,
   "[typescript]": {

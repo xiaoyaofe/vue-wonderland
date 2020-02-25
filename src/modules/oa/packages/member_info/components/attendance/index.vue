@@ -34,7 +34,7 @@
             <div v-if="member_info.overtimeDetailInfo.overtimeInfoList.length > 0">
               <div class="leave-detail-item" v-for="item in member_info.overtimeDetailInfo.overtimeInfoList" :key="item.id">
                 <span v-if="item.overtimeType === '1'" v-html="`[${item.overtimeDate}] &#8593; ${$hourCalculate(item.overtimeTotal)}`" />
-                <span v-if="item.overtimeType === '3'" v-html="`[${item.overtimeDate}] ${['&#8593;', '&#8595;'][item.hrSettingType - 1]} ${$hourCalculate(item.overtimeTotal)} [HR]`" />
+                <span v-if="item.overtimeType === '3'" v-html="`[${item.overtimeDate}] ${['&#8593;', '&#8595;'][item.hrSettingType - 1]} ${$hourCalculate(item.overtimeTotal)} [HR,${item.remark||''}]`" />
               </div>
             </div>
             <div v-else>
@@ -75,7 +75,7 @@
             </el-row>
             <div v-if="member_info.leaveDetailInfo && member_info.leaveDetailInfo.produceDetailInfoList.length > 0">
               <div class="leave-detail-item" v-for="item in member_info.leaveDetailInfo.produceDetailInfoList" :key="item.id">
-                <span v-if="item.hrSettingType" v-html="`[${item.produceDate}] ${['&#8593;', '&#8595;'][item.hrSettingType - 1]} ${$hourCalculate(item.leaveTotal)} [HR]`" />
+                <span v-if="item.hrSettingType" v-html="`[${item.produceDate}] ${['&#8593;', '&#8595;'][item.hrSettingType - 1]} ${$hourCalculate(item.leaveTotal)} [HR,${item.remark||''}]`" />
                 <!-- <span v-else-if="item.extraLeave">
                   <div>[{{item.produceDate}}] {{$hourCalculate(item.leaveTotal)}}</div>
                   <div>[{{item.produceDate}}] {{['&#8593;','&#8595;'][item.extraLeaveType-1]}} {{$hourCalculate(item.extraLeave)}} [手动编辑]

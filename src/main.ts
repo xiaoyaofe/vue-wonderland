@@ -9,7 +9,7 @@ import { CommitOptions } from "types/vuex";
 var flat = require("array.prototype.flat");
 flat.shim();
 
-console.log("version: v2.3.3")
+console.log("version: v2.3.4")
 
 const config: ComponentOptions<Vue> = {
   beforeCreate() {

@@ -199,6 +199,7 @@ export namespace OA {
       produceDate: string
       expireDate: string
       isReset: number
+      remark:string
     }
     export interface RgLeaveInfo {
       hrSettingInfoList: {
@@ -208,7 +209,8 @@ export namespace OA {
         leaveType: number
         settingDate: string
         settingType: number
-        userId: string
+        userId: string,
+        remark:string
       }[]
       useDetailInfoList: UseDetailInfo[]
       produceDetailInfoList: ProduceDetailInfo[]

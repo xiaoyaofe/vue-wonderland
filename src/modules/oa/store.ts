@@ -310,7 +310,8 @@ export default {
             overtimeDate: item.settingDate,
             overtimeTotal: item.duration,
             hrSettingType: item.settingType,
-            overtimeType: "3"
+            overtimeType: "3",
+            remark:item.remark
           })
         }
       })
@@ -321,6 +322,7 @@ export default {
             produceDate: item.settingDate,
             leaveTotal: item.duration,
             hrSettingType: item.settingType,
+            remark:item.remark
           } as any)
         }
       })
