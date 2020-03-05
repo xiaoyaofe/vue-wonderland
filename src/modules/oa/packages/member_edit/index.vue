@@ -84,10 +84,10 @@
 						<span style="margin-right:10px">姓名：</span>
 						{{ edit_user.name }}
 					</el-row>
-					<el-row class="user-detail-user-txt">
+					<!-- <el-row class="user-detail-user-txt">
 						<span style="margin-right:10px">别名：</span>
-						<!-- {{ edit_user.userid }} -->
-					</el-row>
+						{{ edit_user.userid }}
+					</el-row> -->
 				</el-col>
 			</el-row>
 

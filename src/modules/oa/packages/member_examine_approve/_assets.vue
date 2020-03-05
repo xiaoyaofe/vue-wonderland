@@ -345,7 +345,7 @@ export default class Card extends Vue {
     /** 申请类型 */
     applicationType: "11",
     /** 申请人用户id */
-    // userId: this.$state.member_info.userid,
+    userId: this.$state.member_info.userid,
     /** 申请日期 例：2019-09-09 */
     applicationDate: getDateByFormat("yyyy-MM-dd"),
     /** 资产名称 */

@@ -417,7 +417,7 @@
 				});
 			setTimeout(() => {
 				this.$store
-					.dispatch("oa/approvalCheckInRecord", {
+					.dispatch("oa/attendanceNoSignInquery", {
 						startTime: this.model.startTime2,
 						endTime: this.model.endTime2,
 						userId: localStorage.UserId
