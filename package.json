@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "apollo": "vue-cli-service apollo:watch --run \"vue-cli-service serve\"",
     "apollo:run": "vue-cli-service apollo:run",
-    "apollo:watch": "vue-cli-service apollo:watch",
+    "apollo:watch": "vue-cli-service apollo:watch --mode production",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
   },
