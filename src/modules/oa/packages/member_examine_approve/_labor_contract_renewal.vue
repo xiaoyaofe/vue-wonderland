@@ -20,6 +20,11 @@
         <el-col class="label">日期：</el-col>
         <el-col class="value fixed">{{ approval_application_detail_info.applicationDetailInfo.createTime }}</el-col>
       </el-row>
+       <!-- 合同到期日期 -->
+      <el-row type="flex">
+        <el-col class="label">原合同终止时间：</el-col>
+        <el-col class="value fixed">{{  approval_application_detail_info.applicationDetailInfo.oldContractEndTime }}</el-col>
+      </el-row>
 
       <!-- 部门意见 -->
       <el-row type="flex" v-if="approval_application_detail_info.applicationDetailInfo.departmentOpinion">
@@ -181,9 +186,9 @@ import { Detail } from "src/modules/oa/packages/member_examine_approve/_works.vu
 import { getDateByFormat } from "src/service/date";
 
 @Component<Card>({
-  // created() {
-  //   console.log(this.$state.member_info);
-  // }
+  created() {
+    console.log(this.$state.member_info);
+  }
 })
 export default class Card extends Vue {
   @Prop() detail!: Detail;

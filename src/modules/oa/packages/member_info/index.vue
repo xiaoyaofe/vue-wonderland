@@ -153,7 +153,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component<MemberInfo>({
   async created() {
-    console.log(require("src/modules/oa/store").default);
+    // console.log(require("src/modules/oa/store").default);
     this.OvertimeProduceMore = this.member_info.overtimeDetailInfo.overtimeInfoList.length > 1;
     this.OvertimeUseMore = this.member_info.overtimeDetailInfo.useDetailInfoList.length > 1;
     this.LeaveProduceMore = this.member_info.leaveDetailInfo.produceDetailInfoList.length > 1;
