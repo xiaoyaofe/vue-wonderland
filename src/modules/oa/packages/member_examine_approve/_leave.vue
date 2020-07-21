@@ -46,6 +46,11 @@
 				<el-col class="label">请假时间：</el-col>
 				<el-col class="value fixed">{{ approval_application_detail_info.applicationDetailInfo.startTime }} 至 {{ approval_application_detail_info.applicationDetailInfo.endTime }}</el-col>
 			</el-row>
+			<!-- 请假时长 -->
+			<el-row type="flex">
+				<el-col class="label">请假时长：</el-col>
+				<el-col class="value fixed">{{timeStr}}</el-col>
+			</el-row>
 			<!-- 请假事由 -->
 			<el-row type="flex">
 				<el-col class="label">请假事由：</el-col>
@@ -153,7 +158,7 @@
 						</el-select>
 					</el-row>
 
-					<el-row class="sumsize"> 总计：&nbsp;{{ days }}&nbsp;天&nbsp;{{ mhours }}&nbsp;小时 </el-row>
+					<!-- <el-row class="sumsize"> 总计：&nbsp;{{ days }}&nbsp;天&nbsp;{{ mhours }}&nbsp;小时 </el-row> -->
 				</el-col>
 			</el-row>
 			<!-- 请假事由 -->
@@ -288,7 +293,7 @@
 			let arr: any = [];
 			for (let i = 9; i <= 18; i++) {
 				if (i === 13) continue;
-				if ((Number(this.model.leaveType) === 1 || Number(this.model.leaveType) === 2) && (i >= 10 && i <= 12)) continue;
+				if ((Number(this.model.leaveType) === 1 || Number(this.model.leaveType) === 2) && i >= 10 && i <= 12) continue;
 				arr.push({
 					label: i + ":00",
 					value: i
@@ -306,12 +311,12 @@
 		start = "";
 		@Watch("start")
 		startChanged(val) {
-        this.period1 = "";
+			this.period1 = "";
 		}
 		end = "";
 		@Watch("end")
 		endChanged(val) {
-        this.period2 = "";
+			this.period2 = "";
 		}
 		days = 0;
 		mhours = 0;
@@ -376,6 +381,13 @@
 				this.model.duration = hours;
 			}
 		}
+		get timeStr() {
+			const days = Math.floor(this.approval_application_detail_info.applicationDetailInfo.duration / 7.5);
+			const hours = this.approval_application_detail_info.applicationDetailInfo.duration - days * 7.5;
+			if(hours === 0)return  ` 总计：  ${days}  天`;
+
+			return ` 总计：  ${days}  天  ${hours}  小时`;
+		}
 		startDatePickerChange(date: Date) {
 			if (this.end) {
 				if (this.start > this.end) this.start = "";
@@ -425,33 +437,33 @@
 		}
 		async submit() {
 			const leaveType = Number(this.model.leaveType);
-			if (leaveType === 1 && this.$state.member_info.availableLeaveInLieu < this.model.duration) {
-				this.$notify.error("假期不足");
-			} else if (leaveType === 2 && this.leave_type_map && this.$state.member_info.leaveInfo[this.leave_type_map[leaveType].field] < this.model.duration) {
-				this.$notify.error("假期不足");
-			} else {
-				let form_data = new FormData();
-				for (let key in this.model) {
-					switch (key) {
-						case "fileList":
-							this.model.fileList.forEach((item, index) => {
-								form_data.set("file" + index, item.raw);
-							});
-							break;
-						default:
-							const val = this.model[key].trim ? this.model[key].trim() : this.model[key];
-							form_data.set(key, val);
-							break;
-					}
+			// if (leaveType === 1 && this.$state.member_info.availableLeaveInLieu < this.model.duration) {
+			// 	this.$notify.error("假期不足");
+			// } else if (leaveType === 2 && this.leave_type_map && this.$state.member_info.leaveInfo[this.leave_type_map[leaveType].field] < this.model.duration) {
+			// 	this.$notify.error("假期不足");
+			// } else {
+			let form_data = new FormData();
+			for (let key in this.model) {
+				switch (key) {
+					case "fileList":
+						this.model.fileList.forEach((item, index) => {
+							form_data.set("file" + index, item.raw);
+						});
+						break;
+					default:
+						const val = this.model[key].trim ? this.model[key].trim() : this.model[key];
+						form_data.set(key, val);
+						break;
 				}
-
-				this.$dispatch.approval_application(form_data as any).then(res => {
-					if (res.code === 200) {
-						this.$emit("success", 0);
-					}
-				});
 			}
+
+			this.$dispatch.approval_application(form_data as any).then(res => {
+				if (res.code === 200) {
+					this.$emit("success", 0);
+				}
+			});
 		}
+		// }
 	}
 </script>
 

@@ -318,7 +318,7 @@ export default {
             overtimeTotal: item.duration,
             hrSettingType: item.settingType,
             overtimeType: "3",
-             remark:item.remark
+            remark: item.remark
           })
         }
       })
@@ -329,7 +329,7 @@ export default {
             produceDate: item.settingDate,
             leaveTotal: item.duration,
             hrSettingType: item.settingType,
-            remark:item.remark
+            remark: item.remark
           } as any)
         }
       })
@@ -875,7 +875,7 @@ export default {
         }
       })
     }),
-     /* 未补签考勤记录查询 */
+    /* 未补签考勤记录查询 */
     attendanceNoSignInquery: action(function ({ $post, $commit, $notify }, data: {
       userId: string //	是	用户ID
       startTime: string //	是	需要查询的开始日期 格式如：2019- 02 - 25
