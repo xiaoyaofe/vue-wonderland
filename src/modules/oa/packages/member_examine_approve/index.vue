@@ -78,7 +78,9 @@ export default class MemberExamineApprove extends Vue {
       /** 我的工作 */
       works: "我的工作",
       /** 审批流程配置 */
-      configs: "审批流程配置"
+      configs: "审批流程配置",
+      /** 付款申请 */
+      pay: "付款申请"
     }
   };
   static menu_items: MenuItem[] = [
@@ -165,6 +167,12 @@ export default class MemberExamineApprove extends Vue {
       title: MemberExamineApprove.text[Vue.prototype.$language].labor_contract_renewal,
       component: "_labor_contract_renewal",
       type: 14
+    },
+    {
+       // 劳动合同续签申请
+      title: MemberExamineApprove.text[Vue.prototype.$language].pay,
+      component: "_pay",
+      type: 15
     }
   ];
   private input_size = "small";
