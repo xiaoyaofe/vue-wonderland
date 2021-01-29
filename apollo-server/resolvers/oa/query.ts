@@ -12,7 +12,7 @@ export const code = function (UserId) {
 }
 
 export const accessToken = function () {
-  console.log(Const)
+  //console.log(Const)
   return new Promise(function (resolve, reject) {
     const jsonTable = access_token()
     const expires_timestamp: number = jsonTable.get(Const.ACCESS_TOKEN_EXP_TIMESTAMP).value()

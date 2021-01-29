@@ -140,6 +140,9 @@
 				</el-col>
 			</el-row>
 			<el-row type="flex" style="margin: 8px 0 0 0;">
+				<el-col class="label">
+					上传附件：
+				</el-col>
 				<el-col style="margin: 0 auto;">
 					<el-upload ref="upload" class="upload-box" action drag multiple :auto-upload="false" :before-upload="() => false" :on-change="on_file_changed">
 						<i class="el-icon-upload"></i>

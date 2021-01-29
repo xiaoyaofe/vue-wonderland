@@ -138,7 +138,7 @@
 					{{ approval_application_detail_info.applicationDetailInfo.disposalPlan }}
 				</el-col>
 			</el-row>
-	<el-row type="flex" v-if="approval_application_detail_info.applicationDetailInfo.annexPath">
+			<el-row type="flex" v-if="approval_application_detail_info.applicationDetailInfo.annexPath">
 				<img :src="require(`src/assets/oa/icon-folder-blue.png`)" style="padding: 0 10px 0 12px" />
 				<el-col class="label">
 					<a :href="$base + '/file/download?filePath=' + approval_application_detail_info.applicationDetailInfo.annexPath" target="_blank">附件查看</a>
@@ -146,9 +146,9 @@
 			</el-row>
 			<!-- confirm -->
 			<el-row v-if="base.userId === $state.member_info.userid" type="flex" style="padding:0 24px 0 12px;margin: 25px 0 0 0;">
-        <el-button :size="input_size" class="full" @click="confirm.call(this, 2)">否决</el-button>
-        <el-button :size="input_size" class="full" v-required="confirm">同意</el-button>
-      </el-row>
+				<el-button :size="input_size" class="full" @click="confirm.call(this, 2)">否决</el-button>
+				<el-button :size="input_size" class="full" v-required="confirm">同意</el-button>
+			</el-row>
 		</div>
 		<div v-else>
 			<el-row type="flex">
@@ -278,8 +278,11 @@
 					<el-input :size="input_size" type="textarea" v-model="model.disposalPlan" />
 				</el-col>
 			</el-row>
-			<el-row type="flex"  style="margin: 8px 0 0 0;">
-				<el-col  style="margin: 0 auto;">
+			<el-row type="flex" style="margin: 8px 0 0 0;">
+				<el-col class="label">
+					上传附件：
+				</el-col>
+				<el-col style="margin: 0 auto;">
 					<el-upload ref="upload" class="upload-box" action drag multiple :auto-upload="false" :before-upload="() => false" :on-change="on_file_changed">
 						<i class="el-icon-upload"></i>
 						<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
