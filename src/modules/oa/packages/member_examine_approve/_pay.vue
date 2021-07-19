@@ -183,15 +183,15 @@
 			applicationDate: getDateByFormat("yyyy-MM-dd"),
 			/** 付款事由 */
 			reason: "",
-			/** 付款事由 */
+			/** 付款金额 */
 			amount: 0,
-			/** 付款事由 */
+			/** 收款人名称 */
 			payeeName: "",
-			/** 付款事由 */
+			/** 收款人账户 */
 			payeeAccount: "",
-			/** 付款事由 */
+			/** 收款银行 */
 			payeeBank: "",
-			/** 付款事由 */
+			/** 备注 */
 			remark: "",
 
 			fileList: [] as UploadFileList

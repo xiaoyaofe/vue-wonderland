@@ -49,7 +49,7 @@
 			<!-- 请假时长 -->
 			<el-row type="flex">
 				<el-col class="label">请假时长：</el-col>
-				<el-col class="value fixed">{{timeStr}}</el-col>
+				<el-col class="value fixed">{{ timeStr }}</el-col>
 			</el-row>
 			<!-- 请假事由 -->
 			<el-row type="flex">
@@ -69,7 +69,7 @@
 			</el-row>
 
 			<!-- confirm -->
-			<el-row v-if="base.userId === $state.member_info.userid" type="flex" style="padding:0 24px 0 12px;margin: 25px 0 0 0;">
+			<el-row v-if="base.userId === $state.member_info.userid" type="flex" style="padding: 0 24px 0 12px; margin: 25px 0 0 0">
 				<el-button :size="input_size" class="full" @click="confirm.call(this, 2)">否决</el-button>
 				<el-button :size="input_size" class="full" v-required="confirm">同意</el-button>
 			</el-row>
@@ -87,7 +87,7 @@
 					<el-select :size="input_size" v-model="model.leaveType" v-required="model.leaveType">
 						<el-option v-for="(item, id) in leave_type_map" :key="id" :label="item.leaveName" :value="id" />
 					</el-select>
-					<el-select v-if="model.leaveType && leave_type_map[model.leaveType].children" :size="input_size" v-model="model.childrenType" v-required="model.childrenType" style="margin-left: 15px;">
+					<el-select v-if="model.leaveType && leave_type_map[model.leaveType].children" :size="input_size" v-model="model.childrenType" v-required="model.childrenType" style="margin-left: 15px">
 						<el-option v-for="(item, id) in leave_type_map[model.leaveType].children" :key="id" :label="item.leaveName" :value="id" />
 					</el-select>
 				</el-col>
@@ -95,7 +95,7 @@
 			<el-row type="flex" class="type_desc">
 				<span v-if="model.leaveType == 1">
 					<div v-if="$state.member_info.availableLeaveInLieu">
-						<div style="margin-top:5px">可用 {{ $hourCalculate($state.member_info.availableLeaveInLieu) }}</div>
+						<div style="margin-top: 5px">可用 {{ $hourCalculate($state.member_info.availableLeaveInLieu) }}</div>
 					</div>
 					<div v-else>可用 0 天</div>
 				</span>
@@ -107,9 +107,7 @@
 					</div>
 					<div v-else>可用 0 天</div>
 				</span>
-				<span v-if="model.leaveType == 4">
-					备注： 请休病假需提供区级以上医院的有效医疗处方证明或开具的病假证明至人事行政部备案。身体是革命的本钱，请照顾好自己哦~
-				</span>
+				<span v-if="model.leaveType == 4"> 备注： 请休病假需提供区级以上医院的有效医疗处方证明或开具的病假证明至人事行政部备案。身体是革命的本钱，请照顾好自己哦~ </span>
 				<span v-else-if="model.leaveType == 5">
 					假期时长限制：最多3天（含公休日）<br />
 					备注：婚假属于自然日类别假期，需在正式注册登记日起一年内一次性休完，同时成员在提出休假申请时需要提供结婚证明至人事行政部备案。恭喜您与心爱的另一半喜结良缘，祝愿白头偕老、举案齐眉。
@@ -147,19 +145,20 @@
 				<el-col class="label">请假时间：</el-col>
 				<el-col class="value">
 					<el-row type="flex" align="middle" class="from-end">
-						<el-date-picker :size="input_size" v-model="start" v-required="start" placeholder="选择日期" @change="startDatePickerChange" style="width:145px"> </el-date-picker>
-						<el-select v-if="start && model.leaveType" v-model="period1" v-required="period1" :size="input_size" @change="period1Change" style="width:105px;margin-left:10px;" ref="period1">
+						<el-date-picker :size="input_size" v-model="start" v-required="start" placeholder="选择日期" @change="startDatePickerChange" style="width: 145px"> </el-date-picker>
+						<el-select v-if="start && model.leaveType" v-model="period1" v-required="period1" :size="input_size" @change="period1Change" style="width: 105px; margin-left: 10px" ref="period1">
 							<el-option v-for="item in period" :key="item.label" :label="item.label" :value="item.value"> </el-option>
 						</el-select>
-						<div style="text-align:center;width:36px;">至</div>
-						<el-date-picker :size="input_size" v-model="end" v-required="end" placeholder="选择日期" @change="endDatePickerChange" style="width:145px"> </el-date-picker>
-						<el-select v-if="end && model.leaveType" v-model="period2" v-required="period2" :size="input_size" @change="period2Change" style="width:105px;margin-left:10px;" ref="period2">
+						<div style="text-align: center; width: 36px">至</div>
+						<el-date-picker :size="input_size" v-model="end" v-required="end" placeholder="选择日期" @change="endDatePickerChange" style="width: 145px"> </el-date-picker>
+						<el-select v-if="end && model.leaveType" v-model="period2" v-required="period2" :size="input_size" @change="period2Change" style="width: 105px; margin-left: 10px" ref="period2">
 							<el-option v-for="item in period" :key="item.label" :label="item.label" :value="item.value"> </el-option>
 						</el-select>
 					</el-row>
 
 					<!-- <el-row class="sumsize"> 总计：&nbsp;{{ days }}&nbsp;天&nbsp;{{ mhours }}&nbsp;小时 </el-row> -->
 				</el-col>
+				<el-col v-show="leaveDaysNumberStr != ''" :span="6">{{ "共计：" + leaveDaysNumberStr }}</el-col>
 			</el-row>
 			<!-- 请假事由 -->
 			<el-row type="flex">
@@ -176,7 +175,7 @@
 				</el-col>
 			</el-row>
 
-			<el-row type="flex" v-if="model.leaveType == 4" style="margin: 8px 0 0 0;">
+			<el-row type="flex" v-if="model.leaveType == 4" style="margin: 8px 0 0 0">
 				<el-col>
 					<el-upload ref="upload" class="upload-box" action drag multiple :auto-upload="false" :before-upload="() => false" :on-change="on_file_changed">
 						<i class="el-icon-upload"></i>
@@ -185,7 +184,7 @@
 				</el-col>
 			</el-row>
 			<!-- 提交 -->
-			<el-row type="flex" style="padding: 0 24px 0 12px;">
+			<el-row type="flex" style="padding: 0 24px 0 12px">
 				<el-button class="full submit" :size="input_size" v-required="submit">提交</el-button>
 			</el-row>
 		</div>
@@ -222,7 +221,7 @@
 			return localStorage.UserId;
 		}
 		get base() {
-			return (this.approval_detail_info.approvalDetailInfo.find(item => item.approvalResult === 3) as Vuex.OA.Interface.APPOVAL_DETAIL_INFO) || ({} as any);
+			return (this.approval_detail_info.approvalDetailInfo.find((item) => item.approvalResult === 3) as Vuex.OA.Interface.APPOVAL_DETAIL_INFO) || ({} as any);
 		}
 		get manager() {
 			let m = ["同意", "驳回", "待审批", "已转审", "已撤回"],
@@ -233,17 +232,17 @@
 				...[
 					{
 						label: `${this.approval_application_detail_info.applicationDetailInfo.userId}(申请人)`,
-						s: d
-					}
+						s: d,
+					},
 				],
 				...this.approval_detail_info.approvalDetailInfo.map(({ order, userId, approvalResult }) => {
 					const r = {
 						label: `${userId}(${m[approvalResult - 1]})`,
-						s: f[order] ? "," : d
+						s: f[order] ? "," : d,
 					};
 					f[order] = true;
 					return r;
-				})
+				}),
 			].forEach((item, index, array) => {
 				const n = array[index + 1];
 				s += item.label + (n ? n.s : "");
@@ -253,6 +252,35 @@
 		get nextManager() {
 			return (this.base && this.base.nextApproverId) || "无";
 		}
+		get leaveDaysNumberStr() {
+			if (!this.model.startTime || !this.model.endTime || !this.period1 || !this.period2) return "";
+			if (this.model.leaveType != "7" && this.model.leaveType != "16") return "";
+			const startTimeDaysAndTimes = this.model.startTime.split(" ");
+			const endTimeDaysAndTimes = this.model.endTime.split(" ");
+			const dateStart = new Date(startTimeDaysAndTimes[0]).getTime();
+			const dateEnd = new Date(endTimeDaysAndTimes[0]).getTime();
+
+			const difValue = (dateEnd - dateStart) / (1000 * 60 * 60 * 24) - 1;
+			const startHoursArr = startTimeDaysAndTimes[1].split(":");
+			const endHoursArr = endTimeDaysAndTimes[1].split(":");
+			let startHours = 18.5 - Number(startHoursArr[0]) - 1.5;
+			let endHours = Number(endHoursArr[0]) - 9.5;
+			if (+startHoursArr[0] > 12) {
+				startHours += 1.5;
+			}
+			if (+startHoursArr[1] == 30) {
+				startHours -= 0.5;
+			}
+			if (+endHoursArr[0] > 12) {
+				endHours -= 1.5;
+			}
+			if (+endHoursArr[1] == 30) {
+				endHours += 0.5;
+			}
+			const hours = (startHours + endHours) % 7.5;
+			const days = difValue + Math.floor((startHours + endHours) / 7.5);
+			return ` ${days} 天 ${hours} 小时`;
+		}
 		changeNextManager(el) {
 			if (el.target.classList.contains("el-icon-circle-close")) {
 				let name = el.target.getAttribute("name");
@@ -261,15 +289,15 @@
 		}
 		confirm(approvalResult) {
 			var data = Object.assign({}, this.base, { approvalResult });
-			this.$dispatch.approval_confirm(data).then(data => {
+			this.$dispatch.approval_confirm(data).then((data) => {
 				if (data.code === 200) {
 					this.$emit("success", 0);
 					this.$notify.success("操作完成");
 					this.$dispatch.approval_wait_info({
-						UserId: localStorage.UserId
+						UserId: localStorage.UserId,
 					});
 					this.$dispatch.approval_completed_info({
-						UserId: localStorage.UserId
+						UserId: localStorage.UserId,
 					});
 				} else {
 					this.$notify.error(data.message);
@@ -296,11 +324,11 @@
 				if ((Number(this.model.leaveType) === 1 || Number(this.model.leaveType) === 2) && i >= 10 && i <= 12) continue;
 				arr.push({
 					label: i + ":00",
-					value: i
+					value: i,
 				});
 				arr.push({
 					label: i + ":30",
-					value: i + 0.5
+					value: i + 0.5,
 				});
 			}
 			arr.shift();
@@ -354,7 +382,7 @@
 			duration: 0,
 			reason: "",
 			handover: "",
-			fileList: [] as UploadFileList
+			fileList: [] as UploadFileList,
 		};
 		hours() {
 			let startDay = (this.start as any).getDate();
@@ -384,7 +412,7 @@
 		get timeStr() {
 			const days = Math.floor(this.approval_application_detail_info.applicationDetailInfo.duration / 7.5);
 			const hours = this.approval_application_detail_info.applicationDetailInfo.duration - days * 7.5;
-			if(hours === 0)return  ` 总计：  ${days}  天`;
+			if (hours === 0) return ` 总计：  ${days}  天`;
 
 			return ` 总计：  ${days}  天  ${hours}  小时`;
 		}
@@ -457,7 +485,7 @@
 				}
 			}
 
-			this.$dispatch.approval_application(form_data as any).then(res => {
+			this.$dispatch.approval_application(form_data as any).then((res) => {
 				if (res.code === 200) {
 					this.$emit("success", 0);
 				}
